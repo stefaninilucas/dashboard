@@ -168,7 +168,7 @@ df_filtrado.plot(
     y=['Chocolate Pontos', 'Biscoito Pontos', 'Snack Pontos'],
     ax=ax,
     stacked=True,
-    color=['#FF6347', '#FFD700', '#32CD32'],
+    color=["#9D47FF", "#2200FF", "#32A1CD"],
 )
 
 ax.set_xlabel("Total de Pontos")
@@ -177,4 +177,3 @@ ax.set_title("Pontuação por Categoria - Gráfico Empilhado")
 ax.invert_yaxis()
 plt.tight_layout()
 st.pyplot(fig)
- 
