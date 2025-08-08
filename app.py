@@ -3,169 +3,98 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Título do app
+# Função para criar colunas por produto, tipo e mês
+def criar_coluna(df, produto, tipo, mes):
+    nome_coluna = f"{produto} {tipo} {mes}"
+    return df[(df['produto'] == produto) & (df['mes'] == mes)][['vendedor', tipo.lower()]].rename(columns={tipo.lower(): nome_coluna})
+
+
+
+# Carregar base
+df = pd.read_excel("base_dados.xlsx")
+
+# Produtos, tipos e meses
+produtos = ['Chocolate', 'Biscoito', 'Snack']
+tipos = ['Meta', 'Vendas']
+meses = ['1', '2', '3']
+
+# Inicia ranking com vendedores únicos
+df_ranking = df[['vendedor']].drop_duplicates().reset_index(drop=True)
+
+# Adiciona as colunas de metas e vendas de cada produto por mês no ranking
+for produto in produtos:
+    for tipo in tipos:
+        for mes in meses:
+            col_df = criar_coluna(df, produto, tipo, int(mes))
+            df_ranking = df_ranking.merge(col_df, on='vendedor', how='left')
+
+    # Totais
+    metas_cols = [f"{produto} Meta {m}" for m in meses]
+    vendas_cols = [f"{produto} Vendas {m}" for m in meses]
+
+    df_ranking[f"{produto} Meta Total"] = df_ranking[metas_cols].sum(axis=1)
+    df_ranking[f"{produto} Vendas Total"] = df_ranking[vendas_cols].sum(axis=1)
+
+    # Resultado numérico e formatado
+    df_ranking[f"{produto} Resultado"] = df_ranking[f"{produto} Vendas Total"] / df_ranking[f"{produto} Meta Total"]
+    df_ranking[f"{produto} Pontos"] = np.floor(df_ranking[f"{produto} Resultado"] * 10)
+    df_ranking[f"{produto} Resultado Formatado"] = df_ranking[f"{produto} Resultado"].map('{:.2%}'.format)
+
+# Pontuação total
+df_ranking['Total Pontos'] = df_ranking[[f"{p} Pontos" for p in produtos]].sum(axis=1)
+
+# Ordenar e numerar
+df_ranking.sort_values(by=['Total Pontos'] + [f"{p} Pontos" for p in produtos], ascending=False, inplace=True)
+df_ranking.reset_index(drop=True, inplace=True)
+df_ranking.insert(0, 'posição', df_ranking.index + 1)
+
+# Criar estrutura de MultiIndex para exibição
+multi_cols = [('', '', 'Posição'), ('', '', 'Vendedor')]
+dados = [df_ranking['posição'], df_ranking['vendedor']]
+
+for produto in produtos:
+    for tipo in ['Meta', 'Vendas']:
+        for mes in ['1', '2', '3', 'Total']:
+            nome_col = f"{produto} {tipo} {mes}"
+            if nome_col in df_ranking.columns:
+                multi_cols.append((produto, tipo, mes))
+                dados.append(df_ranking[nome_col])
+    multi_cols.append((produto, 'Pontos', ''))
+    dados.append(df_ranking[f"{produto} Pontos"])
+
+multi_cols.append(('Total', 'Pontos', ''))
+dados.append(df_ranking['Total Pontos'])
+
+multi_index = pd.MultiIndex.from_tuples(multi_cols)
+df_multi = pd.DataFrame(list(zip(*dados)), columns=multi_index)
+
+
+# Configuração da página
 st.set_page_config(page_title="Dashboard", layout="wide")
 st.title("Campanha de Incentivos 2025")
 
-# Carregar a base de dados
-df = pd.read_excel("base_dados.xlsx")
-
-# Aplicar mecânicas na base de Dados
-
-#'criar um dataframe com os vendedores únicos'
-df_vendedores = df['vendedor'].drop_duplicates()
-
-#'criar dataframes para cada produto, mes e tipo de dado (meta e vendas)'
-df_chocolate_meta1 = df[(df['produto'] == 'Chocolate') & (df['mes'] == 1)][['vendedor', 'meta']]
-df_chocolate_meta1.rename(columns={'meta': 'Chocolate Meta 1'}, inplace=True)
-
-df_chocolate_meta2 = df[df['produto'] == 'Chocolate'][df['mes'] == 2][['vendedor', 'meta']]
-df_chocolate_meta2.rename(columns={'meta': 'Chocolate Meta 2'}, inplace=True)
-
-df_chocolate_meta3 = df[df['produto'] == 'Chocolate'][df['mes'] == 3][['vendedor', 'meta']]
-df_chocolate_meta3.rename(columns={'meta': 'Chocolate Meta 3'}, inplace=True)
-
-df_chocolate_vendas1 = df[df['produto'] == 'Chocolate'][df['mes'] == 1][['vendedor', 'vendas']]
-df_chocolate_vendas1.rename(columns={'vendas': 'Chocolate Vendas 1'}, inplace=True)
-
-df_chocolate_vendas2 = df[df['produto'] == 'Chocolate'][df['mes'] == 2][['vendedor', 'vendas']]
-df_chocolate_vendas2.rename(columns={'vendas': 'Chocolate Vendas 2'}, inplace=True)
-
-df_chocolate_vendas3 = df[df['produto'] == 'Chocolate'][df['mes'] == 3][['vendedor', 'vendas']]
-df_chocolate_vendas3.rename(columns={'vendas': 'Chocolate Vendas 3'}, inplace=True)
-
-df_biscoito_meta1 = df[df['produto'] == 'Biscoito'][df['mes'] == 1][['vendedor', 'meta']]
-df_biscoito_meta1.rename(columns={'meta': 'Biscoito Meta 1'}, inplace=True)
-
-df_biscoito_meta2 = df[df['produto'] == 'Biscoito'][df['mes'] == 2][['vendedor', 'meta']]
-df_biscoito_meta2.rename(columns={'meta': 'Biscoito Meta 2'}, inplace=True)
-
-df_biscoito_meta3 = df[df['produto'] == 'Biscoito'][df['mes'] == 3][['vendedor', 'meta']]
-df_biscoito_meta3.rename(columns={'meta': 'Biscoito Meta 3'}, inplace=True)
-
-df_biscoito_vendas1 = df[df['produto'] == 'Biscoito'][df['mes'] == 1][['vendedor', 'vendas']]
-df_biscoito_vendas1.rename(columns={'vendas': 'Biscoito Vendas 1'}, inplace=True)
-
-df_biscoito_vendas2 = df[df['produto'] == 'Biscoito'][df['mes'] == 2][['vendedor', 'vendas']]
-df_biscoito_vendas2.rename(columns={'vendas': 'Biscoito Vendas 2'}, inplace=True)
-
-df_biscoito_vendas3 = df[df['produto'] == 'Biscoito'][df['mes'] == 3][['vendedor', 'vendas']]
-df_biscoito_vendas3.rename(columns={'vendas': 'Biscoito Vendas 3'}, inplace=True)
-
-df_snack_meta1 = df[df['produto'] == 'Snack'][df['mes'] == 1][['vendedor', 'meta']]
-df_snack_meta1.rename(columns={'meta': 'Snack Meta 1'}, inplace=True)
-
-df_snack_meta2 = df[df['produto'] == 'Snack'][df['mes'] == 2][['vendedor', 'meta']]
-df_snack_meta2.rename(columns={'meta': 'Snack Meta 2'}, inplace=True)
-
-df_snack_meta3 = df[df['produto'] == 'Snack'][df['mes'] == 3][['vendedor', 'meta']]
-df_snack_meta3.rename(columns={'meta': 'Snack Meta 3'}, inplace=True)
-
-df_snack_vendas1 = df[df['produto'] == 'Snack'][df['mes'] == 1][['vendedor', 'vendas']]
-df_snack_vendas1.rename(columns={'vendas': 'Snack Vendas 1'}, inplace=True)
-
-df_snack_vendas2 = df[df['produto'] == 'Snack'][df['mes'] == 2][['vendedor', 'vendas']]
-df_snack_vendas2.rename(columns={'vendas': 'Snack Vendas 2'}, inplace=True)
-
-df_snack_vendas3 = df[df['produto'] == 'Snack'][df['mes'] == 3][['vendedor', 'vendas']]
-df_snack_vendas3.rename(columns={'vendas': 'Snack Vendas 3'}, inplace=True)
-
-
-#'criar um dataframe final com todos os dados'
-df_ranking = pd.merge(df_vendedores, df_chocolate_meta1, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_chocolate_meta2, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_chocolate_meta3, on='vendedor')
-df_ranking['Chocolate Meta Total'] = df_ranking['Chocolate Meta 1'] + df_ranking['Chocolate Meta 2'] + df_ranking['Chocolate Meta 3']
-df_ranking = pd.merge(df_ranking, df_chocolate_vendas1, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_chocolate_vendas2, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_chocolate_vendas3, on='vendedor')
-df_ranking['Chocolate Vendas Total'] = df_ranking['Chocolate Vendas 1'] + df_ranking['Chocolate Vendas 2'] + df_ranking['Chocolate Vendas 3']
-df_ranking['Chocolate Resultado'] = df_ranking['Chocolate Vendas Total'] / df_ranking['Chocolate Meta Total']
-df_ranking['Chocolate Pontos'] = np.floor(df_ranking['Chocolate Resultado'] * 10)
-df_ranking['Chocolate Resultado'] = df_ranking['Chocolate Resultado'].map('{:.2f}%'.format)
-
-
-df_ranking = pd.merge(df_ranking, df_biscoito_meta1, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_biscoito_meta2, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_biscoito_meta3, on='vendedor')
-df_ranking['Biscoito Meta Total'] = df_ranking['Biscoito Meta 1'] + df_ranking['Biscoito Meta 2'] + df_ranking['Biscoito Meta 3']
-df_ranking = pd.merge(df_ranking, df_biscoito_vendas1, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_biscoito_vendas2, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_biscoito_vendas3, on='vendedor')
-df_ranking['Biscoito Vendas Total'] = df_ranking['Biscoito Vendas 1'] + df_ranking['Biscoito Vendas 2'] + df_ranking['Biscoito Vendas 3']
-df_ranking['Biscoito Resultado'] = df_ranking['Biscoito Vendas Total'] / df_ranking['Biscoito Meta Total']
-df_ranking['Biscoito Pontos'] = np.floor(df_ranking['Biscoito Resultado'] * 10)
-df_ranking['Biscoito Resultado'] = df_ranking['Biscoito Resultado'].map('{:.2f}%'.format)
-
-df_ranking = pd.merge(df_ranking, df_snack_meta1, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_snack_meta2, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_snack_meta3, on='vendedor')
-df_ranking['Snack Meta Total'] = df_ranking['Snack Meta 1'] + df_ranking['Snack Meta 2'] + df_ranking['Snack Meta 3']
-df_ranking = pd.merge(df_ranking, df_snack_vendas1, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_snack_vendas2, on='vendedor')
-df_ranking = pd.merge(df_ranking, df_snack_vendas3, on='vendedor')
-df_ranking['Snack Vendas Total'] = df_ranking['Snack Vendas 1'] + df_ranking['Snack Vendas 2'] + df_ranking['Snack Vendas 3']
-df_ranking['Snack Resultado'] = df_ranking['Snack Vendas Total'] / df_ranking['Snack Meta Total']
-df_ranking['Snack Pontos'] = np.floor(df_ranking['Snack Resultado'] * 10)
-df_ranking['Snack Resultado'] = df_ranking['Snack Resultado'].map('{:.2f}%'.format)
-
-df_ranking['Total Pontos'] = df_ranking['Chocolate Pontos'] + df_ranking['Biscoito Pontos'] + df_ranking['Snack Pontos']
-
-df_ranking.sort_values(by=['Total Pontos','Chocolate Pontos','Biscoito Pontos','Snack Pontos'], ascending=[False, False, False, False], inplace=True)
-df_ranking.reset_index(drop=True, inplace=True)
-df_ranking.insert(0, 'posição', df_ranking.index + 1)
-df_ranking.index = [''] * len(df_ranking)
-
-
-# Mostrar os dados
-st.subheader("Tabela - Ranking dos Vendedores")
-st.dataframe(df_ranking, use_container_width=True, hide_index=True)
-
-# #Filtragem (automática por colunas categóricas)
-# st.sidebar.header("🎯 Filtros")
-# colunas_categoricas = df_ranking.select_dtypes(include=["object", "category"]).columns
-
-# filtros = {}
-# for col in colunas_categoricas:
-#     opcoes = df_ranking[col].dropna().unique()
-#     selecionados = st.sidebar.multiselect(f"Filtrar por {col}", opcoes, default=opcoes)
-#     filtros[col] = selecionados
-
-# # Aplicar filtros
-# df_filtrado = df_ranking.copy()
-# for col, valores in filtros.items():
-#     df_filtrado = df_filtrado[df_filtrado[col].isin(valores)]
-
-filtros = {}
+# Filtros
 st.sidebar.header("Filtros")
 opcoes = df_ranking['vendedor'].dropna().unique()
 selecionados = st.sidebar.multiselect("Filtrar por Vendedor", opcoes, default=opcoes)
-filtros['vendedor'] = selecionados
 
-df_filtrado = df_ranking.copy()
-df_filtrado = df_filtrado[df_filtrado['vendedor'].isin(filtros['vendedor'])]
+df_multi_filtrado = df_multi[df_multi[('', '', 'Vendedor')].isin(selecionados)]
 
+# Exibir tabela com cabeçalho mesclado
+st.subheader("📊 Tabela com Cabeçalhos Agrupados")
+st.dataframe(df_multi_filtrado, use_container_width=True)
 
-# Gráfico de exemplo (você pode personalizar depois)
-# st.subheader("📊 Gráfico de exemplo")
-# coluna_num = st.selectbox("Selecione a coluna numérica para visualizar:", df_filtrado.select_dtypes(include=["number"]).columns)
-# coluna_cat = st.selectbox("Agrupar por:", colunas_categoricas)
+# Gráfico de Pontuação por Categoria
+st.subheader("📈 Gráfico - Ranking dos Vendedores")
 
-# Plotar
-# fig, ax = plt.subplots()
-# df_filtrado.groupby(coluna_cat)[coluna_num].mean().plot(kind="bar", ax=ax, color="skyblue")
-# ax.set_ylabel(f"Média de {coluna_num}")
-# st.pyplot(fig)
+# Montar DataFrame para o gráfico
+df_grafico = df_ranking[df_ranking['vendedor'].isin(selecionados)][['vendedor'] + [f"{p} Pontos" for p in produtos]]
 
-
-st.subheader("Gráfico - Ranking dos Vendedores")
 fig, ax = plt.subplots(figsize=(10, 10))
-# df_filtrado.plot(kind='bar', x='vendedor', y=['Chocolate Pontos', 'Biscoito Pontos', 'Snack Pontos'], ax=ax, color=['#FF6347', '#FFD700', '#32CD32'])
-
-df_filtrado.plot(
+df_grafico.plot(
     kind='barh',
     x='vendedor',
-    y=['Chocolate Pontos', 'Biscoito Pontos', 'Snack Pontos'],
+    y=[f"{p} Pontos" for p in produtos],
     ax=ax,
     stacked=True,
     color=["#9D47FF", "#2200FF", "#32A1CD"],
