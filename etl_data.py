@@ -78,11 +78,9 @@ def multiindex_colunas(df):
     return df
                  
 
-def etl_data():
+def etl_data(produtos, tipos, meses):
     # as listas abaixo devem ser colocadas na ordem que as colunas devem aparecer na tabela
-    produtos = ['Chocolate', 'Biscoito', 'Snack']
-    tipos = ['Meta', 'Vendas']
-    meses = [1, 2, 3]
+    
 
     df_base = pd.read_excel(".\\data\\base_dados.xlsx")
 
