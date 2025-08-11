@@ -113,6 +113,8 @@ def publicar(df):
         )
 
     fig.update_layout(
+        xaxis_title="",
+        yaxis_title="",
         barmode='stack',
         plot_bgcolor="white",
         paper_bgcolor="white",
@@ -125,3 +127,5 @@ def publicar(df):
     fig.update_xaxes(showticklabels=False)
 
     st.plotly_chart(fig, use_container_width=True)
+
+    
