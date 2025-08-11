@@ -114,13 +114,11 @@ df_ranking = ordenar_posicao(df_ranking)
 #formatar os números
 df_ranking = formatar_numeros(df_ranking)
 
-
 # transformar as colunas em multiindex
 df_ranking = multiindex_colunas(df_ranking)
 
 
 publicar(df_ranking)
-
 
 
 
