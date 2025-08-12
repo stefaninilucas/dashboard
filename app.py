@@ -23,8 +23,8 @@ st.title("Campanha de Incentivos 2025")
 # banner
 st.markdown(
     """
-    <div style="background-color:#0071b8;padding:10px;text-align:center">
-        <img src="./image/banner.png" style="width:100%;height:auto;">
+    <div style="background-color:#502172;text-align:center">
+        <img src="https://raw.githubusercontent.com/stefaninilucas/dashboard/refs/heads/branch1/image/banner.png" style="width:100%;height:auto;">
     </div>
     """,
     unsafe_allow_html=True
