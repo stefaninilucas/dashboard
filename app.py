@@ -19,6 +19,17 @@ df = etl_data(produtos, tipos, meses)
 st.set_page_config(page_title="Dashboard", page_icon="📊", layout="wide")
 st.title("Campanha de Incentivos 2025")
 
+
+# banner
+st.markdown(
+    """
+    <div style="background-color:#0071b8;padding:10px;text-align:center">
+        <img src="./image/banner.png" style="width:100%;height:auto;">
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 # filtro
 df_filtrado = filtro(df)
 
