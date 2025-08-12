@@ -23,7 +23,7 @@ st.set_page_config(page_title="Dashboard", page_icon="📊", layout="wide")
 # banner
 st.markdown(
     """
-    <div style="background-color:#ffffff;text-align:center">
+    <div style="background-color:#502172;text-align:center">
         <img src="https://raw.githubusercontent.com/stefaninilucas/dashboard/refs/heads/branch1/image/banner.png" style="width:75%;height:auto;">
     </div>
     """,
