@@ -77,4 +77,3 @@ df_grafico.columns = ['Vendedor', 'Posição', 'Chocolate', 'Biscoito', 'Snack']
 df_grafico['Posição_Vendedor'] = df_grafico['Posição'].astype(str) + " - " + df['Vendedor'] # Cria coluna para o eixo Y com "Posição - Vendedor"
 
 grafico1 = grafico_barra_emp(df_grafico,"Gráfico - Ranking de Pontuação",produtos,'Posição_Vendedor', cores_por_produto)
-

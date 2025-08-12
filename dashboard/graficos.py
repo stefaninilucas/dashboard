@@ -3,10 +3,6 @@ import plotly_express as px
 
 def grafico_barra_emp(df, titulo, eixo_x, eixo_y, cores):
     
-    theme_base = st.get_option("theme.base")
-    font_color = "white" if theme_base == "dark" else "black"
-    bg_color = "black" if theme_base == "dark" else "white"
-
     st.subheader(titulo)
 
     # Ordena por posição
@@ -32,7 +28,7 @@ def grafico_barra_emp(df, titulo, eixo_x, eixo_y, cores):
             y=row[eixo_y],
             text=str(int(row['Total'])),
             showarrow=False,
-            font=dict(size=16, color=font_color),
+            font=dict(size=16, color='black'),
             xanchor='left',
             yanchor='middle'
         )
@@ -42,11 +38,11 @@ def grafico_barra_emp(df, titulo, eixo_x, eixo_y, cores):
         xaxis_title="",
         yaxis_title="",
         barmode='stack',
-        plot_bgcolor=bg_color,
-        paper_bgcolor=bg_color,
+        plot_bgcolor='white',
+        paper_bgcolor='white',
         font=dict(size=14),
         margin=dict(r=100),
-        yaxis=dict(tickfont=dict(size=16, color=font_color)),
+        yaxis=dict(tickfont=dict(size=16, color='black')),
         legend=dict(
             orientation="h",
             yanchor="bottom",
@@ -55,7 +51,7 @@ def grafico_barra_emp(df, titulo, eixo_x, eixo_y, cores):
             x=1,
             font=dict(
                 size=14,
-                color=font_color
+                color='black'
             )    
         )
     )
