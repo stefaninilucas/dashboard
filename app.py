@@ -5,7 +5,6 @@ from dashboard.tabelas import tabela
 from dashboard.markdown import markdown
 from dashboard.graficos import grafico_barra_emp
 import streamlit as st
-import plotly.express as px
 
 produtos = ['Chocolate', 'Biscoito', 'Snack']
 tipos = ['Meta', 'Vendas']
@@ -30,7 +29,6 @@ metrica1 = metrica(df, "Total de Vendedores", total_vendedores)
 # tabela
 tabela1 = tabela(df_filtrado,"Ranking Geral")
 
-
 # markdown
 markdown1 = markdown("🛈 Critérios de Desempate: 1° Pontos Chocolate | 2° Pontos Biscoito | 3° Pontos Snack<br><br>", 12)
 markdown2 = markdown("""🛈 Legenda:                                
@@ -45,7 +43,6 @@ markdown2 = markdown("""🛈 Legenda:
 
 # gráfico de barras empilhadas
 
-
 # cria dataframe exclusivo para o grafico
 pontos_cols = [(produto, "Pontos") for produto in produtos]
 colunas = [("Vendedor", ""), ("Posição", "")] + pontos_cols
@@ -53,7 +50,6 @@ df_grafico = df[colunas].copy()
 df_grafico.columns = ['Vendedor', 'Posição', 'Chocolate', 'Biscoito', 'Snack']
 
 df_grafico['Posição_Vendedor'] = df_grafico['Posição'].astype(str) + " - " + df['Vendedor'] # Cria coluna para o eixo Y com "Posição - Vendedor"
-
 
 grafico1 = grafico_barra_emp(df_grafico,"Gráfico - Ranking de Pontuação",produtos,'Posição_Vendedor', cores_por_produto)
 

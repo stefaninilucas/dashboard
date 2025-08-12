@@ -79,14 +79,11 @@ def multiindex_colunas(df):
                  
 
 def etl_data(produtos, tipos, meses):
-    # as listas abaixo devem ser colocadas na ordem que as colunas devem aparecer na tabela
     
-
-    df_base = pd.read_excel(".\\data\\base_dados.xlsx")
+    df_base = pd.read_excel("./data/base_dados.xlsx")
 
     # criar o dataframe do ranking através do vendedores únicos
     df_ranking = df_base['vendedor'].drop_duplicates().to_frame().reset_index(drop=True)
-
 
     # criar as colunas de meta e vendas de cada produto de cada mes
     for produto in produtos:
