@@ -43,7 +43,14 @@ def grafico_barra_emp(df, titulo, eixo_x, eixo_y, cores):
         paper_bgcolor="white",
         font=dict(size=14),
         margin=dict(r=100),
-        yaxis=dict(tickfont=dict(size=16))
+        yaxis=dict(tickfont=dict(size=16)),
+        legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1,
+        xanchor="right",
+        x=1,
+        )
     )
 
     # esconde os rótulos do eixo X
