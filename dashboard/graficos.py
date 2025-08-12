@@ -1,6 +1,5 @@
 import streamlit as st
 import plotly_express as px
-import plotly.graph_objects as go
 
 def grafico_barra_emp(df, titulo, eixo_x, eixo_y, cores):
     
@@ -43,7 +42,7 @@ def grafico_barra_emp(df, titulo, eixo_x, eixo_y, cores):
         paper_bgcolor="white",
         font=dict(size=14),
         margin=dict(r=100),
-        yaxis=dict(tickfont=dict(size=16)),
+        yaxis=dict(tickfont=dict(size=16, color="black")),
         legend=dict(
         orientation="h",
         yanchor="bottom",

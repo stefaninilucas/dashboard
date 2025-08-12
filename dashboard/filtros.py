@@ -2,7 +2,7 @@ import streamlit as st
 
 def filtro(df):
 
-    
+    st.sidebar.header("🔍 Filtros")
 
     # Botão para selecionar/deselecionar todos
     if 'selecionar_todos' not in st.session_state:
