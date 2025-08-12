@@ -28,7 +28,6 @@ def grafico_barra_emp(df, titulo, eixo_x, eixo_y, cores):
             y=row[eixo_y],
             text=str(int(row['Total'])),
             showarrow=False,
-            font=dict(size=16, color='black'),
             xanchor='left',
             yanchor='middle'
         )
@@ -38,8 +37,6 @@ def grafico_barra_emp(df, titulo, eixo_x, eixo_y, cores):
         xaxis_title="",
         yaxis_title="",
         barmode='stack',
-        plot_bgcolor='#f0f2f6',
-        paper_bgcolor='#f0f2f6',
         font=dict(size=14),
         margin=dict(r=100),
         yaxis=dict(tickfont=dict(size=16, color='black')),
@@ -51,7 +48,6 @@ def grafico_barra_emp(df, titulo, eixo_x, eixo_y, cores):
             x=1,
             font=dict(
                 size=14,
-                color='black'
             )    
         )
     )

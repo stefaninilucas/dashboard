@@ -7,6 +7,12 @@ from dashboard.graficos import grafico_barra_emp
 import streamlit as st
 import pandas as pd
 
+def apply_custom_css(css_file):
+        with open(css_file) as f:
+            css = f.read()
+        st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+
+apply_custom_css('style.css')
 
 produtos = ['Chocolate', 'Biscoito', 'Snack']
 tipos = ['Meta', 'Vendas']
