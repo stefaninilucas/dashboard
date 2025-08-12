@@ -17,14 +17,14 @@ cores_por_produto={
 
 df = etl_data(produtos, tipos, meses)
 st.set_page_config(page_title="Dashboard", page_icon="📊", layout="wide")
-st.title("Campanha de Incentivos 2025")
+#st.title("Campanha de Incentivos 2025")
 
 
 # banner
 st.markdown(
     """
-    <div style="background-color:#502172;text-align:center">
-        #<img src="https://raw.githubusercontent.com/stefaninilucas/dashboard/refs/heads/branch1/image/banner.png" style="width:100%;height:auto;">
+    <div style="background-color:#ffffff;text-align:center">
+        <img src="https://raw.githubusercontent.com/stefaninilucas/dashboard/refs/heads/branch1/image/banner.png" style="width:75%;height:auto;">
     </div>
     """,
     unsafe_allow_html=True
