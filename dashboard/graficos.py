@@ -47,6 +47,6 @@ def grafico_barra_emp(df, titulo, eixo_x, eixo_y, cores):
     )
 
     # esconde os rótulos do eixo X
-    # fig.update_xaxes(showticklabels=False)
+    fig.update_xaxes(showticklabels=False)
 
     st.plotly_chart(fig, use_container_width=True)
