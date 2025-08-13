@@ -1,0 +1,7 @@
+[theme]
+base="dark"
+textColor="whitesmoke"
+
+[theme]
+base="light"
+textColor="black"
