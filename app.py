@@ -7,7 +7,6 @@ from dashboard.graficos import grafico_barra_emp
 import streamlit as st
 import pandas as pd
 
-
 produtos = ['Chocolate', 'Biscoito', 'Snack']
 tipos = ['Meta', 'Vendas']
 meses = [1, 2, 3]
